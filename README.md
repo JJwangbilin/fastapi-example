@@ -12,4 +12,12 @@ pip install -r requirements.txt
 uvicorn --host=0.0.0.0 app.main:app
 ```
 
-# content
+# api
+
+- [x] jwt鉴权
+- [x] 用户注册
+- [x] 用户登录
+
+# docs
+
+![](./preview.png)
