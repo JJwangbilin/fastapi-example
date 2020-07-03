@@ -9,8 +9,8 @@ from starlette.datastructures import CommaSeparatedStrings, Secret
 from app.core.logging import InterceptHandler
 
 API_PREFIX = "/api"
-
-JWT_TOKEN_PREFIX = "Token"
+# 前缀不可变更 swagger插件
+JWT_TOKEN_PREFIX = "Bearer"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
 VERSION = "0.0.0"
 

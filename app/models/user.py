@@ -4,7 +4,7 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 
-from app.common.security import generate_salt, get_password_hash, verify_password
+from app.common.security import verify_password
 
 
 class _ChannelEnum(str, Enum):
@@ -48,26 +48,3 @@ class UserInResponse(BaseModel):
 # 写入数据库，和前端请求参数无关
 class UserInCreate(UserBase, IDModel, CreatedAtModel, UpdatedAtModel):
     password: str
-
-
-class UserInLogin(BaseModel):
-    name: str = Field(..., title="手机号/邮箱")
-    password: str
-
-
-class _StatusEnum(str, Enum):
-    A = '待审核'
-    E = '审核通过'
-    F = '审核未通过'
-
-
-class UserExtInDB(BaseModel):
-    id: UUID1
-    professional: str = None
-    desc: str = None
-    status: _StatusEnum
-    reason: str = None
-    percent: float
-    realname: str = None
-    bank_no: str = None
-    bank_name: str = None

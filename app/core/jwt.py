@@ -5,6 +5,7 @@ from fastapi import Depends, Header
 from jwt import PyJWTError
 from starlette.exceptions import HTTPException
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from fastapi.security import OAuth2PasswordBearer
 
 from app.crud.user import get_user
 from app.db.mongodb import AsyncIOMotorClient, get_database
@@ -17,8 +18,8 @@ ALGORITHM = "HS256"
 
 
 # Header中authorization信息校验，校验token的前缀
-def _get_authorization_token(authorization: str = Header(...)):
-    token_prefix, token = authorization.split(" ")
+def _get_authorization_token(Authorization: str = Header(...)):
+    token_prefix, token = Authorization.split(" ")
     if token_prefix != JWT_TOKEN_PREFIX:
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN, detail="令牌信息错误"
@@ -26,9 +27,13 @@ def _get_authorization_token(authorization: str = Header(...)):
     return token
 
 
+# Swagger UI
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
+
+
 # 解密token，从db中获取用户信息
 async def _get_current_user(db: AsyncIOMotorClient = Depends(get_database),
-                            token: str = Depends(_get_authorization_token)) -> User:
+                            token: str = Depends(oauth2_scheme)) -> User:
     try:
         payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
         # TokenPayload可校验解密后内容
@@ -50,9 +55,9 @@ async def _get_current_user(db: AsyncIOMotorClient = Depends(get_database),
 
 
 # 公开内容，无token可访问
-def _get_authorization_token_optional(authorization: str = Header(None)):
-    if authorization:
-        return _get_authorization_token(authorization)
+def _get_authorization_token_optional(Authorization: str = Header(None)):
+    if Authorization:
+        return _get_authorization_token(Authorization)
     return ""
 
 
