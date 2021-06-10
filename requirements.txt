@@ -1,4 +1,4 @@
-fastapi==0.58.1
+fastapi==0.65.2
 fastapi-contrib==0.2.6
 jaeger-client==4.3.0
 loguru==0.5.1
